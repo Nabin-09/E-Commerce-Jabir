@@ -21,7 +21,7 @@ const Home = () => {
         fetchDataFromApi("/products?populate=*").then((res) => {
             setProducts(res.data);
         });
-    }, []);
+    }, [setProducts, setCategories]);
 
     return (
         <>

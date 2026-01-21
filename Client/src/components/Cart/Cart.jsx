@@ -10,7 +10,6 @@ const Cart = ({ setShowCart }) => {
         cartSubTotal,
         handleRemoveFromCart,
         handleCartProductQuantity,
-        openRazorpay,
         proceedToCheckout
     } = useContext(Context);
 
