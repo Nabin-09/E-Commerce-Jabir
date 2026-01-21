@@ -1,16 +1,15 @@
 import axios from "axios";
-const params = {
-  headers: {
-    Authorization: "bearer " + process.env.REACT_APP_STRIPE_APP_KEY,
-  },
-};
 
-export const fetchDataFromApi = async (url) => {
-  try {
-    const {data} = await axios.get(process.env.REACT_APP_DEV_URL + url, params);
-    return data;
-  } catch (error) {
-    console.log(error);
-    return error;
-  }
+const api = axios.create({
+    baseURL: "http://localhost:1337",
+});
+
+export const fetchDataFromApi = async (endpoint) => {
+    try {
+        const { data } = await api.get(`/api${endpoint}`);
+        return data;
+    } catch (error) {
+        console.error("API ERROR:", error);
+        throw error;
+    }
 };
