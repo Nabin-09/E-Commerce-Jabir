@@ -1,26 +1,25 @@
 import { createContext, useEffect, useState } from "react";
-import { fetchDataFromApi } from "./api";
-import axios from "axios";
+import api, { fetchDataFromApi } from "./utils/client/api";
 
 export const Context = createContext();
 
 const AppContext = ({ children }) => {
-    // ----------------------------
+    // =========================
     // PRODUCT & CATEGORY STATE
-    // ----------------------------
+    // =========================
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
 
-    // ----------------------------
+    // =========================
     // CART STATE
-    // ----------------------------
+    // =========================
     const [cartItems, setCartItems] = useState([]);
     const [cartCount, setCartCount] = useState(0);
     const [cartSubTotal, setCartSubTotal] = useState(0);
 
-    // ----------------------------
+    // =========================
     // FETCH DATA (ON APP LOAD)
-    // ----------------------------
+    // =========================
     useEffect(() => {
         fetchDataFromApi("/categories?populate=*").then((res) => {
             setCategories(res?.data || []);
@@ -31,9 +30,9 @@ const AppContext = ({ children }) => {
         });
     }, []);
 
-    // ----------------------------
-    // CART LOGIC
-    // ----------------------------
+    // =========================
+    // UPDATE CART TOTALS
+    // =========================
     useEffect(() => {
         let count = 0;
         let total = 0;
@@ -47,9 +46,9 @@ const AppContext = ({ children }) => {
         setCartSubTotal(total);
     }, [cartItems]);
 
-    // ----------------------------
+    // =========================
     // ADD TO CART
-    // ----------------------------
+    // =========================
     const addToCart = (product, qty) => {
         setCartItems((prev) => {
             const existing = prev.find((p) => p.id === product.id);
@@ -65,68 +64,19 @@ const AppContext = ({ children }) => {
             return [...prev, { ...product, quantity: qty }];
         });
     };
-    const proceedToCheckout = async () => {
-    try {
-        if (cartSubTotal <= 0) {
-            alert("Cart is empty");
-            return;
-        }
 
-        // 1. Create order on backend
-        const res = await axios.post(
-            "http://localhost:1337/api/payment/createOrder",
-            {
-                amount: cartSubTotal,
-            }
-        );
-
-        const { order } = res.data;
-
-        // 2. Razorpay options
-        const options = {
-            key: process.env.REACT_APP_RAZORPAY_KEY_ID,
-            amount: order.amount,
-            currency: "INR",
-            name: "MyZenmart",
-            description: "Checkout Payment",
-            order_id: order.id,
-            handler: async function (response) {
-                // OPTIONAL: verify payment later
-                console.log("Payment success", response);
-
-                // Clear cart
-                setCartItems([]);
-
-                // Redirect
-                window.location.href = "/success";
-            },
-            theme: {
-                color: "#8e2de2",
-            },
-        };
-
-        // 3. Open Razorpay
-        const razorpay = new window.Razorpay(options);
-        razorpay.open();
-    } catch (error) {
-        console.error("Checkout error", error);
-        alert("Checkout failed");
-    }
-};
-
-
-    // ----------------------------
+    // =========================
     // REMOVE FROM CART
-    // ----------------------------
+    // =========================
     const handleRemoveFromCart = (product) => {
         setCartItems((prev) =>
             prev.filter((item) => item.id !== product.id)
         );
     };
 
-    // ----------------------------
-    // UPDATE CART QTY
-    // ----------------------------
+    // =========================
+    // UPDATE CART QUANTITY
+    // =========================
     const handleCartProductQuantity = (type, product) => {
         setCartItems((prev) =>
             prev.map((item) => {
@@ -143,17 +93,56 @@ const AppContext = ({ children }) => {
         );
     };
 
-    // ----------------------------
+    // =========================
+    // CHECKOUT (RAZORPAY)
+    // =========================
+    const proceedToCheckout = async () => {
+        try {
+            if (cartSubTotal <= 0) {
+                alert("Cart is empty");
+                return;
+            }
+
+            // Create order on backend (Render)
+            const res = await api.post("/payment/createOrder", {
+                amount: cartSubTotal,
+            });
+
+            const { order } = res.data;
+
+            const options = {
+                key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+                amount: order.amount,
+                currency: "INR",
+                name: "MyZenmart",
+                description: "Checkout Payment",
+                order_id: order.id,
+                handler: function () {
+                    setCartItems([]);
+                    window.location.href = "/success";
+                },
+                theme: {
+                    color: "#8e2de2",
+                },
+            };
+
+            const razorpay = new window.Razorpay(options);
+            razorpay.open();
+        } catch (error) {
+            console.error("Checkout error", error);
+            alert("Checkout failed");
+        }
+    };
+
+    // =========================
     // CONTEXT PROVIDER
-    // ----------------------------
+    // =========================
     return (
         <Context.Provider
             value={{
                 // data
                 categories,
-                setCategories,
                 products,
-                setProducts,
 
                 // cart
                 cartItems,
@@ -162,7 +151,7 @@ const AppContext = ({ children }) => {
                 addToCart,
                 handleRemoveFromCart,
                 handleCartProductQuantity,
-                proceedToCheckout
+                proceedToCheckout,
             }}
         >
             {children}
