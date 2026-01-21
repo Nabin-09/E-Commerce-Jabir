@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "./client/api";
 
 export const loadRazorpay = () => {
   return new Promise((resolve) => {
@@ -17,11 +17,10 @@ export const openRazorpay = async ({ amount, onSuccess }) => {
     return;
   }
 
-  // create order from backend
-  const { data } = await axios.post(
-    "http://localhost:1337/api/payment/create-order",
-    { amount }
-  );
+  // ✅ create order from backend (Render, not localhost)
+  const { data } = await api.post("/payment/create-order", {
+    amount,
+  });
 
   const options = {
     key: process.env.REACT_APP_RAZORPAY_KEY_ID,
