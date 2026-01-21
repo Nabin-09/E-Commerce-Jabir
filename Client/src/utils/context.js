@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import api, { fetchDataFromApi } from "./utils/client/api";
+import api, { fetchDataFromApi } from "./api";
 
 export const Context = createContext();
 
@@ -117,7 +117,7 @@ const AppContext = ({ children }) => {
                 name: "MyZenmart",
                 description: "Checkout Payment",
                 order_id: order.id,
-                handler: function () {
+                handler: () => {
                     setCartItems([]);
                     window.location.href = "/success";
                 },
@@ -126,8 +126,7 @@ const AppContext = ({ children }) => {
                 },
             };
 
-            const razorpay = new window.Razorpay(options);
-            razorpay.open();
+            new window.Razorpay(options).open();
         } catch (error) {
             console.error("Checkout error", error);
             alert("Checkout failed");
@@ -140,11 +139,9 @@ const AppContext = ({ children }) => {
     return (
         <Context.Provider
             value={{
-                // data
                 categories,
                 products,
 
-                // cart
                 cartItems,
                 cartCount,
                 cartSubTotal,
