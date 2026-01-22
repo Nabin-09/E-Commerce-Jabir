@@ -1,93 +1,117 @@
-import "./SingleProduct.scss";
-import { useEffect, useState, useContext } from "react";
-import { useParams } from "react-router-dom";
-import {
-    FaFacebookF,
-    FaTwitter,
-    FaInstagram,
-    FaLinkedinIn,
-    FaPinterest,
-    FaCartPlus,
-} from "react-icons/fa";
-
-import { fetchDataFromApi } from "../../utils/api";
+import "./Cart.scss";
+import { MdClose, MdDelete } from "react-icons/md";
+import { useContext } from "react";
 import { Context } from "../../utils/context";
+import { getImageUrl } from "../../utils/getImageUrl";
 
-const SingleProduct = () => {
-    const { id } = useParams();
-    const { addToCart } = useContext(Context);
-
-    const [product, setProduct] = useState(null);
-    const [qty, setQty] = useState(1);
-
-    useEffect(() => {
-        fetchDataFromApi(`/products/${id}?populate=*`).then((res) => {
-            setProduct(res.data);
-        });
-    }, [id]);
-
-    if (!product) return null;
-
-    // ✅ SAFE to access AFTER null check
-    const imageUrl = product.img?.[0]?.url;
-    const category = product.categories?.[0]?.title;
+const Cart = ({ setShowCart }) => {
+    const {
+        cartItems,
+        cartCount,
+        cartSubTotal,
+        handleRemoveFromCart,
+        handleCartProductQuantity,
+        proceedToCheckout,
+    } = useContext(Context);
 
     return (
-        <div className="single-product-main-content">
-            <div className="layout">
-                <div className="single-product-page">
-                    {/* LEFT */}
-                    <div className="left">
-                        <img
-                            src={imageUrl || "/placeholder.png"}
-                            alt={product.title}
-                        />
+        <div className="cart-panel">
+            <div className="opac-layer" onClick={() => setShowCart(false)} />
+
+            <div className="cart-content">
+                {/* Header */}
+                <div className="cart-header">
+                    <span className="heading">
+                        Shopping Cart ({cartCount})
+                    </span>
+                    <span
+                        className="close-btn"
+                        onClick={() => setShowCart(false)}
+                    >
+                        <MdClose />
+                    </span>
+                </div>
+
+                {/* Cart Body */}
+                {cartItems.length === 0 ? (
+                    <div className="empty-cart">
+                        <p>Your cart is empty</p>
                     </div>
+                ) : (
+                    <>
+                        <div className="cart-items">
+                            {cartItems.map((item) => (
+                                <div className="cart-item" key={item.id}>
+                                    <img
+                                        src={getImageUrl(item.img)}
+                                        alt={item.title}
+                                    />
 
-                    {/* RIGHT */}
-                    <div className="right">
-                        <span className="name">{product.title}</span>
-                        <span className="price">₹{product.price}</span>
-                        <span className="desc">{product.desc}</span>
+                                    <div className="item-details">
+                                        <span className="name">
+                                            {item.title}
+                                        </span>
 
-                        <div className="cart-buttons">
-                            <div className="quantity-buttons">
-                                <span onClick={() => setQty(p => Math.max(1, p - 1))}>-</span>
-                                <span>{qty}</span>
-                                <span onClick={() => setQty(p => p + 1)}>+</span>
+                                        <div className="quantity-buttons">
+                                            <span
+                                                onClick={() =>
+                                                    handleCartProductQuantity(
+                                                        "dec",
+                                                        item
+                                                    )
+                                                }
+                                            >
+                                                -
+                                            </span>
+                                            <span>{item.quantity}</span>
+                                            <span
+                                                onClick={() =>
+                                                    handleCartProductQuantity(
+                                                        "inc",
+                                                        item
+                                                    )
+                                                }
+                                            >
+                                                +
+                                            </span>
+                                        </div>
+
+                                        <div className="price-row">
+                                            <span className="price">
+                                                ₹{item.price * item.quantity}
+                                            </span>
+
+                                            <MdDelete
+                                                className="delete"
+                                                onClick={() =>
+                                                    handleRemoveFromCart(item)
+                                                }
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Footer */}
+                        <div className="cart-footer">
+                            <div className="subtotal">
+                                <span>Subtotal</span>
+                                <span>₹{cartSubTotal}</span>
                             </div>
 
                             <button
-                                className="add-to-cart"
-                                onClick={() => addToCart(product, qty)}
+                                className="checkout-btn"
+                                onClick={proceedToCheckout}
                             >
-                                <FaCartPlus size={20} />
-                                ADD TO CART
+                                Pay ₹{cartSubTotal}
                             </button>
                         </div>
-
-                        <div className="divider" />
-
-                        <div className="info-item">
-                            <span className="text-bold">
-                                Category: <span>{category}</span>
-                            </span>
-                            <span className="text-bold">
-                                Share:
-                                <span className="social-icons">
-                                    <FaFacebookF size={16} />
-                                    <FaTwitter size={16} />
-                                    <FaInstagram size={16} />
-                                    <FaLinkedinIn size={16} />
-                                    <FaPinterest size={16} />
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                    </>
+                )}
             </div>
         </div>
     );
 };
 
-export default SingleProduct;
+export default Cart;
