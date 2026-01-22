@@ -1,44 +1,66 @@
-import { useEffect, useState } from "react";
+import "./SingleProduct.scss";
+import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import Products from "../Products/Products";
+import { FaCartPlus } from "react-icons/fa";
 import { fetchDataFromApi } from "../../utils/api";
-import "./CategoryPage.scss";
+import { Context } from "../../utils/context";
+import { getImageUrl } from "../../utils/getImageUrl";
 
-const CategoryPage = () => {
+const SingleProduct = () => {
   const { id } = useParams();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { addToCart } = useContext(Context);
+
+  const [product, setProduct] = useState(null);
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    setLoading(true);
-
-    fetchDataFromApi(
-      `/products?populate=*&filters[categories][documentId][$eq]=${id}`
-    )
+    fetchDataFromApi(`/products/${id}?populate=*`)
       .then((res) => {
-        setProducts(res?.data || []);
+        setProduct(res?.data || null);
       })
       .catch(() => {
-        setProducts([]);
-      })
-      .finally(() => setLoading(false));
+        setProduct(null);
+      });
   }, [id]);
 
-  return (
-    <div className="category-page">
-      <div className="layout">
-        <h2 className="category-title">Products</h2>
+  if (!product) return null;
 
-        {loading ? (
-          <p>Loading...</p>
-        ) : products.length > 0 ? (
-          <Products products={products} />
-        ) : (
-          <p>No products found</p>
-        )}
+  // ✅ FIX: use product, not item
+  const imageUrl = getImageUrl(product.img);
+
+  return (
+    <div className="single-product-main-content">
+      <div className="layout">
+        <div className="single-product-page">
+          <div className="left">
+            <img src={imageUrl} alt={product.title} />
+          </div>
+
+          <div className="right">
+            <span className="name">{product.title}</span>
+            <span className="price">₹{product.price}</span>
+            <span className="desc">{product.desc}</span>
+
+            <div className="cart-buttons">
+              <div className="quantity-buttons">
+                <span onClick={() => setQty((q) => Math.max(1, q - 1))}>-</span>
+                <span>{qty}</span>
+                <span onClick={() => setQty((q) => q + 1)}>+</span>
+              </div>
+
+              <button
+                className="add-to-cart"
+                onClick={() => addToCart(product, qty)}
+              >
+                <FaCartPlus size={20} />
+                ADD TO CART
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
 
-export default CategoryPage;
+export default SingleProduct;

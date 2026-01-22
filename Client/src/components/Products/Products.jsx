@@ -1,9 +1,8 @@
 import "./Products.scss";
 import { useNavigate } from "react-router-dom";
-import { STRAPI_BASE_URL } from "../../utils/constants";
 import { getImageUrl } from "../../utils/getImageUrl";
 
-const Products = ({ products, headingText }) => {
+const Products = ({ products = [], headingText }) => {
   const navigate = useNavigate();
 
   return (
@@ -11,9 +10,8 @@ const Products = ({ products, headingText }) => {
       {headingText && <div className="sec-heading">{headingText}</div>}
 
       <div className="products">
-        {products?.map((item) => {
-          
-const imageUrl = getImageUrl(item.img);
+        {products.map((item) => {
+          const imageUrl = getImageUrl(item.img);
 
           return (
             <div
