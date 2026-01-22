@@ -1,36 +1,50 @@
+import "./Products.scss";
 import { useNavigate } from "react-router-dom";
-import "./Category.scss";
 
-const STRAPI_URL = process.env.REACT_APP_DEV_URL;
+const STRAPI_URL = process.env.REACT_APP_API_URL.replace("/api", "");
 
-const Category = ({ categories }) => {
+const Products = ({ products, headingText }) => {
     const navigate = useNavigate();
 
     return (
-        <div className="shop-by-category">
-            <div className="layout">
-                <h2 className="section-heading">Shop by Category</h2>
+        <div className="products-container">
+            {headingText && (
+                <div className="sec-heading">{headingText}</div>
+            )}
 
-                <div className="categories">
-                    {categories?.map((item) => (
+            <div className="products">
+                {products?.map((item) => {
+                    const imageUrl = item.img?.[0]?.url;
+
+                    return (
                         <div
                             key={item.documentId}
-                            className="category"
+                            className="product-card"
                             onClick={() =>
-                                navigate(`/category/${item.documentId}`)
+                                navigate(`/product/${item.documentId}`)
                             }
                         >
-                            <img
-                                src={STRAPI_URL + item.img?.[0]?.url}
-                                alt={item.title}
-                            />
-                            <span className="cat-name">{item.title}</span>
+                            <div className="thumbnail">
+                                <img
+                                    src={
+                                        imageUrl
+                                            ? STRAPI_URL + imageUrl
+                                            : "/placeholder.png"
+                                    }
+                                    alt={item.title}
+                                />
+                            </div>
+
+                            <div className="prod-details">
+                                <span className="name">{item.title}</span>
+                                <span className="price">₹{item.price}</span>
+                            </div>
                         </div>
-                    ))}
-                </div>
+                    );
+                })}
             </div>
         </div>
     );
 };
 
-export default Category;
+export default Products;

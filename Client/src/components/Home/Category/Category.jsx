@@ -1,23 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import "./Category.scss";
 
-const STRAPI_URL = process.env.REACT_APP_DEV_URL;
-
+const STRAPI_URL = process.env.REACT_APP_API_URL.replace("/api", "");
 
 const Category = ({ categories }) => {
     const navigate = useNavigate();
 
     return (
         <div className="shop-by-category">
-            <h2 className="sec-heading">Shop by Category</h2>
+            <div className="layout">
+                <h2 className="section-heading">Shop by Category</h2>
 
-            <div className="categories">
-                {categories?.map((item) => {
-                    const imageUrl = item.img?.[0]?.url;
-
-                    return (
+                <div className="categories">
+                    {categories?.map((item) => (
                         <div
-                            key={item.id}
+                            key={item.documentId}
                             className="category"
                             onClick={() =>
                                 navigate(`/category/${item.documentId}`)
@@ -25,16 +22,16 @@ const Category = ({ categories }) => {
                         >
                             <img
                                 src={
-                                    imageUrl
-                                        ? STRAPI_URL + imageUrl
+                                    item.img?.[0]?.url
+                                        ? STRAPI_URL + item.img[0].url
                                         : "/placeholder.png"
                                 }
                                 alt={item.title}
                             />
                             <span className="cat-name">{item.title}</span>
                         </div>
-                    );
-                })}
+                    ))}
+                </div>
             </div>
         </div>
     );
