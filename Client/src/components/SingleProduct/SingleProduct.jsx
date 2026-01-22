@@ -4,8 +4,8 @@ import { useParams } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa";
 import { fetchDataFromApi } from "../../utils/api";
 import { Context } from "../../utils/context";
+import { STRAPI_BASE_URL} from "../../utils/api";
 
-const STRAPI_URL = process.env.REACT_APP_API_URL;
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -22,9 +22,9 @@ const SingleProduct = () => {
 
   if (!product) return null;
 
-  const imageUrl = product.img?.[0]?.url
-    ? `${STRAPI_URL}${product.img[0].url}`
-    : "/placeholder.png";
+ const imageUrl = product.img?.[0]?.url
+  ? `${STRAPI_BASE_URL}${product.img[0].url}`
+  : "/placeholder.png";
 
   return (
     <div className="single-product-main-content">
