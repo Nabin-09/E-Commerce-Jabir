@@ -13,12 +13,9 @@ import {
 import { fetchDataFromApi } from "../../utils/api";
 import { Context } from "../../utils/context";
 
-
-
 const SingleProduct = () => {
     const { id } = useParams();
     const { addToCart } = useContext(Context);
-    const imageUrl = product.img?.[0]?.url;
 
     const [product, setProduct] = useState(null);
     const [qty, setQty] = useState(1);
@@ -29,7 +26,11 @@ const SingleProduct = () => {
         });
     }, [id]);
 
+    // ⛔ stop rendering until product exists
     if (!product) return null;
+
+    // ✅ SAFE: product now exists
+    const imageUrl = product.img?.[0]?.url;
     const category = product.categories?.[0]?.title;
 
     return (
@@ -38,11 +39,10 @@ const SingleProduct = () => {
                 <div className="single-product-page">
                     {/* LEFT */}
                     <div className="left">
-                        
-<img
-  src={imageUrl || "/placeholder.png"}
-  alt={product.title}
-/>
+                        <img
+                            src={imageUrl || "/placeholder.png"}
+                            alt={product.title}
+                        />
                     </div>
 
                     {/* RIGHT */}
@@ -53,11 +53,9 @@ const SingleProduct = () => {
 
                         <div className="cart-buttons">
                             <div className="quantity-buttons">
-                                <span onClick={() => setQty((p) => Math.max(1, p - 1))}>
-                                    -
-                                </span>
+                                <span onClick={() => setQty(p => Math.max(1, p - 1))}>-</span>
                                 <span>{qty}</span>
-                                <span onClick={() => setQty((p) => p + 1)}>+</span>
+                                <span onClick={() => setQty(p => p + 1)}>+</span>
                             </div>
 
                             <button
