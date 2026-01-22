@@ -1,6 +1,5 @@
-export const getImageUrl = (img) => {
-    if (!img?.data?.length) return "/placeholder.png";
-
-    const baseURL = process.env.REACT_APP_API_URL.replace("/api", "");
-    return baseURL + img.data[0].attributes.url;
+// utils/getImageUrl.js
+export const getImageUrl = (url) => {
+  if (!url) return "/placeholder.png";
+  return `${process.env.REACT_APP_API_URL}${url}`;
 };

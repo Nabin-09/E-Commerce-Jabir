@@ -21,10 +21,8 @@ const Category = ({ categories }) => {
                                     navigate(`/category/${item.documentId}`)
                                 }
                             >
-                                <img
-                                    src={getImageUrl(item.img)}
-                                    alt={item.title}
-                                />
+                              <img src={getImageUrl(item.img?.[0]?.url)} alt={item.title} />
+
 
 
                                 <span className="cat-name">{item.title}</span>
