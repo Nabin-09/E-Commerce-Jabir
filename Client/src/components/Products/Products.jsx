@@ -1,7 +1,8 @@
 import "./Products.scss";
 import { useNavigate } from "react-router-dom";
 
-const STRAPI_URL = "http://localhost:1337";
+const STRAPI_URL = process.env.REACT_APP_API_URL.replace("/api", "");
+
 
 const Products = ({ products, headingText }) => {
     const navigate = useNavigate();
