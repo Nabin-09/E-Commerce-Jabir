@@ -42,7 +42,7 @@ const Cart = ({ setShowCart }) => {
                             {cartItems.map((item) => {
                                 const imageUrl =
                                     item.img?.[0]?.attributes?.url
-                                        ? `http://localhost:1337${item.img[0].attributes.url}`
+                                        ? `${process.env.REACT_APP_DEV_URL}${item.img[0].attributes.url}`
                                         : "/placeholder.png";
 
                                 return (

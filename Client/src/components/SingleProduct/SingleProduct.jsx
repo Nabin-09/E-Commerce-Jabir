@@ -13,7 +13,8 @@ import {
 import { fetchDataFromApi } from "../../utils/api";
 import { Context } from "../../utils/context";
 
-const STRAPI_URL = "http://localhost:1337";
+const STRAPI_URL = process.env.REACT_APP_DEV_URL;
+
 
 const SingleProduct = () => {
     const { id } = useParams();

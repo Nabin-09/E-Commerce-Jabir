@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./Category.scss";
 
-const STRAPI_URL = "http://localhost:1337";
+const STRAPI_URL = process.env.REACT_APP_DEV_URL;
 
 const Category = ({ categories }) => {
     const navigate = useNavigate();
