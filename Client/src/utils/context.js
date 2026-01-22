@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import api, { fetchDataFromApi } from "./api";
+import  { fetchDataFromApi } from "./api";
 
 export const Context = createContext();
 
@@ -104,11 +104,21 @@ const AppContext = ({ children }) => {
             }
 
             // Create order on backend (Render)
-            const res = await api.post("/payment/createOrder", {
-                amount: cartSubTotal,
-            });
+            const res = await fetch(
+    `${process.env.REACT_APP_API_URL}/api/payment/createOrder`,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ amount: cartSubTotal }),
+    }
+);
 
-            const { order } = res.data;
+const data = await res.json();
+const { order } = data;
+
+
 
             const options = {
                 key: process.env.REACT_APP_RAZORPAY_KEY_ID,
