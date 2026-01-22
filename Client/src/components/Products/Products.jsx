@@ -17,7 +17,8 @@ const Products = ({ products = [], headingText }) => {
             <div
               key={item.id}
               className="product-card"
-              onClick={() => navigate(`/product/${item.id}`)}
+              onClick={() => navigate(`/product/${item.documentId}`)}
+
             >
               <div className="thumbnail">
                 <img src={imageUrl} alt={item.title} />

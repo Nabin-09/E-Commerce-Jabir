@@ -12,16 +12,16 @@ const SingleProduct = () => {
 
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
+useEffect(() => {
+  fetchDataFromApi(
+    `/products?populate=*&filters[documentId][$eq]=${id}`
+  )
+    .then((res) => {
+      setProduct(res?.data?.[0] || null);
+    })
+    .catch(() => setProduct(null));
+}, [id]);
 
-  useEffect(() => {
-    fetchDataFromApi(`/products/${id}?populate=*`)
-      .then((res) => {
-        setProduct(res?.data || null);
-      })
-      .catch(() => {
-        setProduct(null);
-      });
-  }, [id]);
 
   if (!product) return null;
 
