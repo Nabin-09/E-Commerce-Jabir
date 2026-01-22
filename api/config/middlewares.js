@@ -1,21 +1,34 @@
 module.exports = [
-  'strapi::errors',
-  'strapi::security',
+  "strapi::errors",
   {
-    name: 'strapi::cors',
+    name: "strapi::security",
     config: {
-      origin: [
-        'http://localhost:3000',
-        'https://your-vercel-app.vercel.app',
-      ],
-      methods: ['GET','POST','PUT','DELETE'],
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          "connect-src": ["'self'", "https:"],
+          "img-src": ["'self'", "data:", "blob:", "https:"],
+          "media-src": ["'self'", "data:", "blob:", "https:"],
+        },
+      },
     },
   },
-  'strapi::poweredBy',
-  'strapi::logger',
-  'strapi::query',
-  'strapi::body',
-  'strapi::session',
-  'strapi::favicon',
-  'strapi::public',
+  {
+    name: "strapi::cors",
+    config: {
+      origin: [
+        "http://localhost:3000",
+        "https://e-commerce-jabir.vercel.app",
+      ],
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      headers: ["Content-Type", "Authorization"],
+    },
+  },
+  "strapi::poweredBy",
+  "strapi::logger",
+  "strapi::query",
+  "strapi::body",
+  "strapi::session",
+  "strapi::favicon",
+  "strapi::public",
 ];
