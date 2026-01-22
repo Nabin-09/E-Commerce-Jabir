@@ -1,64 +1,44 @@
-import "./SingleProduct.scss";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FaCartPlus } from "react-icons/fa";
+import Products from "../Products/Products";
 import { fetchDataFromApi } from "../../utils/api";
-import { Context } from "../../utils/context";
-import { STRAPI_BASE_URL} from "../../utils/constants";
+import "./CategoryPage.scss";
 
-
-const SingleProduct = () => {
+const CategoryPage = () => {
   const { id } = useParams();
-  const { addToCart } = useContext(Context);
-
-  const [product, setProduct] = useState(null);
-  const [qty, setQty] = useState(1);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchDataFromApi(`/products/${id}?populate=*`).then((res) => {
-      setProduct(res.data);
-    });
+    setLoading(true);
+
+    fetchDataFromApi(
+      `/products?populate=*&filters[categories][documentId][$eq]=${id}`
+    )
+      .then((res) => {
+        setProducts(res?.data || []);
+      })
+      .catch(() => {
+        setProducts([]);
+      })
+      .finally(() => setLoading(false));
   }, [id]);
 
-  if (!product) return null;
-
- const imageUrl = product.img?.[0]?.url
-  ? `${STRAPI_BASE_URL}${product.img[0].url}`
-  : "/placeholder.png";
-
   return (
-    <div className="single-product-main-content">
+    <div className="category-page">
       <div className="layout">
-        <div className="single-product-page">
-          <div className="left">
-            <img src={imageUrl} alt={product.title} />
-          </div>
+        <h2 className="category-title">Products</h2>
 
-          <div className="right">
-            <span className="name">{product.title}</span>
-            <span className="price">₹{product.price}</span>
-            <span className="desc">{product.desc}</span>
-
-            <div className="cart-buttons">
-              <div className="quantity-buttons">
-                <span onClick={() => setQty(q => Math.max(1, q - 1))}>-</span>
-                <span>{qty}</span>
-                <span onClick={() => setQty(q => q + 1)}>+</span>
-              </div>
-
-              <button
-                className="add-to-cart"
-                onClick={() => addToCart(product, qty)}
-              >
-                <FaCartPlus size={20} />
-                ADD TO CART
-              </button>
-            </div>
-          </div>
-        </div>
+        {loading ? (
+          <p>Loading...</p>
+        ) : products.length > 0 ? (
+          <Products products={products} />
+        ) : (
+          <p>No products found</p>
+        )}
       </div>
     </div>
   );
 };
 
-export default SingleProduct;
+export default CategoryPage;

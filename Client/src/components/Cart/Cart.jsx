@@ -3,6 +3,7 @@ import { MdClose, MdDelete } from "react-icons/md";
 import { useContext } from "react";
 import { Context } from "../../utils/context";
 import { STRAPI_BASE_URL} from "../../utils/constants";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const Cart = ({ setShowCart }) => {
     const {
@@ -34,9 +35,8 @@ const Cart = ({ setShowCart }) => {
                     <>
                         <div className="cart-items">
                             {cartItems.map((item) => {
-                                const imageUrl = item.img?.[0]?.url
-                                    ? `${STRAPI_BASE_URL}${item.img[0].url}`
-                                    : "/placeholder.png";
+                             
+const imageUrl = getImageUrl(item.img);
 
 
 
