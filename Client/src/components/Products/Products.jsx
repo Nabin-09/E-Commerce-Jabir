@@ -1,8 +1,7 @@
 import "./Products.scss";
 import { useNavigate } from "react-router-dom";
 
-const STRAPI_URL = process.env.REACT_APP_API_URL.replace("/api", "");
-
+const STRAPI_URL = process.env.REACT_APP_API_URL;
 
 const Products = ({ products, headingText }) => {
     const navigate = useNavigate();
@@ -21,13 +20,15 @@ const Products = ({ products, headingText }) => {
                         <div
                             key={item.id}
                             className="product-card"
-                            onClick={() => navigate(`/product/${item.documentId}`)}
+                            onClick={() =>
+                                navigate(`/product/${item.documentId}`)
+                            }
                         >
                             <div className="thumbnail">
                                 <img
                                     src={
                                         imageUrl
-                                            ? STRAPI_URL + imageUrl
+                                            ? `${STRAPI_URL}${imageUrl}`
                                             : "/placeholder.png"
                                     }
                                     alt={item.title}
