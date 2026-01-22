@@ -105,15 +105,14 @@ const AppContext = ({ children }) => {
 
             // Create order on backend (Render)
             const res = await fetch(
-    `${process.env.REACT_APP_API_URL}/api/payment/createOrder`,
-    {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ amount: cartSubTotal }),
-    }
+  `${process.env.REACT_APP_API_URL}/api/payment/createOrder`,
+  {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ amount: cartSubTotal }),
+  }
 );
+
 
 const data = await res.json();
 const { order } = data;

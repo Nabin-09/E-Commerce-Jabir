@@ -1,11 +1,15 @@
 export const getImageUrl = (imgArr) => {
-  if (!imgArr || imgArr.length === 0) return "/placeholder.png";
+  if (!Array.isArray(imgArr) || imgArr.length === 0) {
+    return "/placeholder.png";
+  }
 
   const url = imgArr[0]?.url;
 
-  // If Cloudinary (absolute URL), return as-is
-  if (url?.startsWith("http")) return url;
+  if (!url) return "/placeholder.png";
 
-  // Else local upload
+  // Cloudinary or absolute
+  if (url.startsWith("http")) return url;
+
+  // Local Strapi upload
   return `${process.env.REACT_APP_API_URL}${url}`;
 };
