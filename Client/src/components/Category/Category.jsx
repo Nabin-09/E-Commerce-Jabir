@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./Category.scss";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const Category = ({ categories }) => {
     const navigate = useNavigate();
@@ -11,7 +12,6 @@ const Category = ({ categories }) => {
 
                 <div className="categories">
                     {categories?.map((item) => {
-                        const imageUrl = item.img?.[0]?.url;
 
                         return (
                             <div
@@ -22,9 +22,10 @@ const Category = ({ categories }) => {
                                 }
                             >
                                 <img
-                                    src={imageUrl || "/placeholder.png"}
+                                    src={getImageUrl(item.img)}
                                     alt={item.title}
                                 />
+
 
                                 <span className="cat-name">{item.title}</span>
                             </div>

@@ -1,5 +1,6 @@
 import "./Products.scss";
 import { useNavigate } from "react-router-dom";
+import { getImageUrl } from "../../utils/getImageUrl";
 
 const Products = ({ products, headingText }) => {
     const navigate = useNavigate();
@@ -12,7 +13,6 @@ const Products = ({ products, headingText }) => {
 
             <div className="products">
                 {products?.map((item) => {
-                    const imageUrl = item.img?.[0]?.url;
 
                     return (
                         <div
@@ -23,8 +23,9 @@ const Products = ({ products, headingText }) => {
                             }
                         >
                             <div className="thumbnail">
+
                                 <img
-                                    src={imageUrl || "/placeholder.png"}
+                                    src={getImageUrl(item.img)}
                                     alt={item.title}
                                 />
                             </div>
