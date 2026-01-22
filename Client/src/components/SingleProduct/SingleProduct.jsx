@@ -1,18 +1,11 @@
 import "./SingleProduct.scss";
 import { useEffect, useState, useContext } from "react";
 import { useParams } from "react-router-dom";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaInstagram,
-  FaLinkedinIn,
-  FaPinterest,
-  FaCartPlus,
-} from "react-icons/fa";
-
+import { FaCartPlus } from "react-icons/fa";
 import { fetchDataFromApi } from "../../utils/api";
 import { Context } from "../../utils/context";
-import { getImageUrl } from "../../utils/getImageUrl";
+
+const STRAPI_URL = process.env.REACT_APP_API_URL;
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -22,15 +15,16 @@ const SingleProduct = () => {
   const [qty, setQty] = useState(1);
 
   useEffect(() => {
-    fetchDataFromApi(`/api/products/${id}?populate=*`).then((res) => {
+    fetchDataFromApi(`/products/${id}?populate=*`).then((res) => {
       setProduct(res.data);
     });
   }, [id]);
 
   if (!product) return null;
 
-  const imageUrl = getImageUrl(product.img?.[0]?.url);
-  const category = product.categories?.[0]?.title;
+  const imageUrl = product.img?.[0]?.url
+    ? `${STRAPI_URL}${product.img[0].url}`
+    : "/placeholder.png";
 
   return (
     <div className="single-product-main-content">
@@ -59,24 +53,6 @@ const SingleProduct = () => {
                 <FaCartPlus size={20} />
                 ADD TO CART
               </button>
-            </div>
-
-            <div className="divider" />
-
-            <div className="info-item">
-              <span className="text-bold">
-                Category: <span>{category}</span>
-              </span>
-              <span className="text-bold">
-                Share:
-                <span className="social-icons">
-                  <FaFacebookF />
-                  <FaTwitter />
-                  <FaInstagram />
-                  <FaLinkedinIn />
-                  <FaPinterest />
-                </span>
-              </span>
             </div>
           </div>
         </div>
