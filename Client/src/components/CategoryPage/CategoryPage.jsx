@@ -10,12 +10,13 @@ const CategoryPage = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    fetchDataFromApi(
-      `/products?populate=*&filters[categories][documentId][$eq]=${id}`
-    ).then((res) => {
-      setProducts(res.data || []);
-    });
-  }, [id]);
+  fetchDataFromApi(
+    `/products?populate=*&filters[categories][id][$eq]=${id}`
+  ).then((res) => {
+    setProducts(res.data || []);
+  });
+}, [id]);
+
 
   return (
     <div className="category-page">

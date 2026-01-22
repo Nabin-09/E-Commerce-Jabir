@@ -1,13 +1,16 @@
-import axios from "axios";
 import { STRAPI_BASE_URL } from "./constants";
 
 export const fetchDataFromApi = async (endpoint) => {
+  try {
     const res = await fetch(`${STRAPI_BASE_URL}/api${endpoint}`);
-    return res.json();
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch ${endpoint}`);
+    }
+
+    return await res.json();
+  } catch (err) {
+    console.error("API ERROR:", err.message);
+    throw err;
+  }
 };
-
-const api = axios.create({
-    baseURL: `${STRAPI_BASE_URL}/api`,
-});
-
-export default api;
