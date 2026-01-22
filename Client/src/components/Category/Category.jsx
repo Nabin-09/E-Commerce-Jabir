@@ -1,8 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./Category.scss";
 
-const STRAPI_URL = process.env.REACT_APP_API_URL.replace("/api", "");
-
 const Category = ({ categories }) => {
     const navigate = useNavigate();
 
@@ -12,25 +10,26 @@ const Category = ({ categories }) => {
                 <h2 className="section-heading">Shop by Category</h2>
 
                 <div className="categories">
-                    {categories?.map((item) => (
-                        <div
-                            key={item.documentId}
-                            className="category"
-                            onClick={() =>
-                                navigate(`/category/${item.documentId}`)
-                            }
-                        >
-                            <img
-                                src={
-                                    item.img?.[0]?.url
-                                        ? STRAPI_URL + item.img[0].url
-                                        : "/placeholder.png"
+                    {categories?.map((item) => {
+                        const imageUrl = item.img?.[0]?.url;
+
+                        return (
+                            <div
+                                key={item.documentId}
+                                className="category"
+                                onClick={() =>
+                                    navigate(`/category/${item.documentId}`)
                                 }
-                                alt={item.title}
-                            />
-                            <span className="cat-name">{item.title}</span>
-                        </div>
-                    ))}
+                            >
+                                <img
+                                    src={imageUrl || "/placeholder.png"}
+                                    alt={item.title}
+                                />
+
+                                <span className="cat-name">{item.title}</span>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
         </div>
