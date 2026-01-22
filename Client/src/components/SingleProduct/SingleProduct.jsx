@@ -12,20 +12,29 @@ const SingleProduct = () => {
 
   const [product, setProduct] = useState(null);
   const [qty, setQty] = useState(1);
-useEffect(() => {
-  fetchDataFromApi(
-    `/products?populate=*&filters[documentId][$eq]=${id}`
-  )
-    .then((res) => {
-      setProduct(res?.data?.[0] || null);
-    })
-    .catch(() => setProduct(null));
-}, [id]);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setLoading(true);
 
-  if (!product) return null;
+    fetchDataFromApi(
+      `/products?populate=*&filters[documentId][$eq]=${id}`
+    )
+      .then((res) => {
+        setProduct(res?.data?.[0] || null);
+      })
+      .catch(() => {
+        setProduct(null);
+      })
+      .finally(() => setLoading(false));
+  }, [id]);
 
-  // ✅ FIX: use product, not item
+  if (loading) return <p style={{ padding: 20 }}>Loading product…</p>;
+
+  if (!product) {
+    return <p style={{ padding: 20 }}>Product not found</p>;
+  }
+
   const imageUrl = getImageUrl(product.img);
 
   return (
@@ -43,9 +52,9 @@ useEffect(() => {
 
             <div className="cart-buttons">
               <div className="quantity-buttons">
-                <span onClick={() => setQty((q) => Math.max(1, q - 1))}>-</span>
+                <span onClick={() => setQty(q => Math.max(1, q - 1))}>-</span>
                 <span>{qty}</span>
-                <span onClick={() => setQty((q) => q + 1)}>+</span>
+                <span onClick={() => setQty(q => q + 1)}>+</span>
               </div>
 
               <button
