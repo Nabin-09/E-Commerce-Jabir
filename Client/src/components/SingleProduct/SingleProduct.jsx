@@ -13,12 +13,12 @@ import {
 import { fetchDataFromApi } from "../../utils/api";
 import { Context } from "../../utils/context";
 
-const STRAPI_URL = process.env.REACT_APP_DEV_URL;
 
 
 const SingleProduct = () => {
     const { id } = useParams();
     const { addToCart } = useContext(Context);
+    const imageUrl = product.img?.[0]?.url;
 
     const [product, setProduct] = useState(null);
     const [qty, setQty] = useState(1);
@@ -30,8 +30,6 @@ const SingleProduct = () => {
     }, [id]);
 
     if (!product) return null;
-
-    const imageUrl = product.img?.[0]?.url;
     const category = product.categories?.[0]?.title;
 
     return (
@@ -40,14 +38,11 @@ const SingleProduct = () => {
                 <div className="single-product-page">
                     {/* LEFT */}
                     <div className="left">
-                        <img
-                            src={
-                                imageUrl
-                                    ? STRAPI_URL + imageUrl
-                                    : "/placeholder.png"
-                            }
-                            alt={product.title}
-                        />
+                        
+<img
+  src={imageUrl || "/placeholder.png"}
+  alt={product.title}
+/>
                     </div>
 
                     {/* RIGHT */}
