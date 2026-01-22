@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa";
 import { fetchDataFromApi } from "../../utils/api";
 import { Context } from "../../utils/context";
-import { STRAPI_BASE_URL} from "../../utils/api";
+import { STRAPI_BASE_URL} from "../../utils/constants";
 
 
 const SingleProduct = () => {
